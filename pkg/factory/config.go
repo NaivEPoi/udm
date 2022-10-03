@@ -63,6 +63,7 @@ type Configuration struct {
 	ServiceNameList []string           `yaml:"serviceNameList,omitempty"  valid:"required"`
 	NrfUri          string             `yaml:"nrfUri,omitempty"  valid:"required, url"`
 	SuciProfiles    []suci.SuciProfile `yaml:"SuciProfile,omitempty"`
+	OAuth           bool               `yaml:"OAuth,omitempty"`
 }
 
 func (c *Configuration) validate() (bool, error) {

@@ -10,14 +10,24 @@
 package eventexposure
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
+	"github.com/free5gc/openapi"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/free5gc/udm/internal/sbi/producer"
 	"github.com/free5gc/util/httpwrapper"
 )
 
 // DeleteEeSubscription - Unsubscribe
 func HTTPDeleteEeSubscription(c *gin.Context) {
+	scopes := []string{"nudm-ee"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && udm_context.UDM_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["ueIdentity"] = c.Params.ByName("ueIdentity")
 	req.Params["subscriptionID"] = c.Params.ByName("subscriptionId")

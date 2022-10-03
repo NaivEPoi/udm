@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -112,7 +111,7 @@ func GetAmf3gppAccessProcedure(ueID string, supportedFeatures string) (
 	}
 
 	amf3GppAccessRegistration, resp, err := clientAPI.AMF3GPPAccessRegistrationDocumentApi.
-		QueryAmfContext3gpp(context.Background(), ueID, &queryAmfContext3gppParamOpts)
+		QueryAmfContext3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID, &queryAmfContext3gppParamOpts)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(resp.StatusCode),
@@ -167,7 +166,7 @@ func GetAmfNon3gppAccessProcedure(queryAmfContextNon3gppParamOpts Nudr_DataRepos
 	}
 
 	amfNon3GppAccessRegistration, resp, err := clientAPI.AMFNon3GPPAccessRegistrationDocumentApi.
-		QueryAmfContextNon3gpp(context.Background(), ueID, &queryAmfContextNon3gppParamOpts)
+		QueryAmfContextNon3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID, &queryAmfContextNon3gppParamOpts)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(resp.StatusCode),
@@ -229,7 +228,7 @@ func RegistrationAmf3gppAccessProcedure(registerRequest models.Amf3GppAccessRegi
 	var createAmfContext3gppParamOpts Nudr_DataRepository.CreateAmfContext3gppParamOpts
 	optInterface := optional.NewInterface(registerRequest)
 	createAmfContext3gppParamOpts.Amf3GppAccessRegistration = optInterface
-	resp, err := clientAPI.AMF3GPPAccessRegistrationDocumentApi.CreateAmfContext3gpp(context.Background(),
+	resp, err := clientAPI.AMF3GPPAccessRegistrationDocumentApi.CreateAmfContext3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"),
 		ueID, &createAmfContext3gppParamOpts)
 	if err != nil {
 		logger.UecmLog.Errorln("CreateAmfContext3gpp error : ", err)
@@ -308,7 +307,7 @@ func RegisterAmfNon3gppAccessProcedure(registerRequest models.AmfNon3GppAccessRe
 	optInterface := optional.NewInterface(registerRequest)
 	createAmfContextNon3gppParamOpts.AmfNon3GppAccessRegistration = optInterface
 	resp, err := clientAPI.AMFNon3GPPAccessRegistrationDocumentApi.CreateAmfContextNon3gpp(
-		context.Background(), ueID, &createAmfContextNon3gppParamOpts)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID, &createAmfContextNon3gppParamOpts)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(resp.StatusCode),
@@ -434,7 +433,7 @@ func UpdateAmf3gppAccessProcedure(request models.Amf3GppAccessRegistrationModifi
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
 
-	resp, err := clientAPI.AMF3GPPAccessRegistrationDocumentApi.AmfContext3gpp(context.Background(), ueID,
+	resp, err := clientAPI.AMF3GPPAccessRegistrationDocumentApi.AmfContext3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID,
 		patchItemReqArray)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
@@ -551,7 +550,7 @@ func UpdateAmfNon3gppAccessProcedure(request models.AmfNon3GppAccessRegistration
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
 
-	resp, err := clientAPI.AMFNon3GPPAccessRegistrationDocumentApi.AmfContextNon3gpp(context.Background(),
+	resp, err := clientAPI.AMFNon3GPPAccessRegistrationDocumentApi.AmfContextNon3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"),
 		ueID, patchItemReqArray)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
@@ -595,7 +594,7 @@ func DeregistrationSmfRegistrationsProcedure(ueID string, pduSessionID string) (
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
 
-	resp, err := clientAPI.SMFRegistrationDocumentApi.DeleteSmfContext(context.Background(), ueID, pduSessionID)
+	resp, err := clientAPI.SMFRegistrationDocumentApi.DeleteSmfContext(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID, pduSessionID)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(resp.StatusCode),
@@ -663,7 +662,7 @@ func RegistrationSmfRegistrationsProcedure(request *models.SmfRegistration, ueID
 		return nil, nil, util.ProblemDetailsSystemFailure(err.Error())
 	}
 
-	resp, err := clientAPI.SMFRegistrationDocumentApi.CreateSmfContextNon3gpp(context.Background(), ueID,
+	resp, err := clientAPI.SMFRegistrationDocumentApi.CreateSmfContextNon3gpp(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), ueID,
 		pduID32, &createSmfContextNon3gppParamOpts)
 	if err != nil {
 		problemDetails.Cause = err.(openapi.GenericOpenAPIError).Model().(models.ProblemDetails).Cause

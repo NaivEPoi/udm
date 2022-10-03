@@ -15,3 +15,7 @@ require (
 	golang.org/x/crypto v0.0.0-20201216223049-8b5274cf687f
 	gopkg.in/yaml.v2 v2.4.0
 )
+
+replace (
+   github.com/free5gc/openapi => ../../../openapi
+)

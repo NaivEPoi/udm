@@ -1,10 +1,10 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/Nnrf_NFDiscovery"
 	"github.com/free5gc/openapi/models"
 	udm_context "github.com/free5gc/udm/internal/context"
@@ -26,7 +26,7 @@ func SendNFIntances(nrfUri string, targetNfType, requestNfType models.NfType,
 	configuration.SetBasePath(nrfUri) // addr
 	clientNRF := Nnrf_NFDiscovery.NewAPIClient(configuration)
 
-	result, res, err1 := clientNRF.NFInstancesStoreApi.SearchNFInstances(context.TODO(), targetNfType,
+	result, res, err1 := clientNRF.NFInstancesStoreApi.SearchNFInstances(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), targetNfType,
 		requestNfType, &param)
 	if err1 != nil {
 		err = err1

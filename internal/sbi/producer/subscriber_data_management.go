@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -64,7 +63,7 @@ func getAmDataProcedure(supi string, plmnID string, supportedFeatures string) (
 	}
 
 	accessAndMobilitySubscriptionDataResp, res, err := clientAPI.AccessAndMobilitySubscriptionDataDocumentApi.
-		QueryAmData(context.Background(), supi, plmnID, &queryAmDataParamOpts)
+		QueryAmData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &queryAmDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Errorf(err.Error())
@@ -139,7 +138,7 @@ func getIdTranslationResultProcedure(gpsi string) (response *models.IdTranslatio
 	}
 
 	idTranslationResultResp, res, err := clientAPI.QueryIdentityDataBySUPIOrGPSIDocumentApi.GetIdentityData(
-		context.Background(), gpsi, &getIdentityDataParamOpts)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), gpsi, &getIdentityDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Errorf(err.Error())
@@ -255,7 +254,7 @@ func getSupiProcedure(supi string, plmnID string, dataSetNames []string, support
 		var body models.AccessAndMobilitySubscriptionData
 		udm_context.UDM_Self().CreateAccessMobilitySubsDataForUe(supi, body)
 		amData, res, err := clientAPI.AccessAndMobilitySubscriptionDataDocumentApi.QueryAmData(
-			context.Background(), supi, plmnID, &queryAmDataParamOpts)
+			openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &queryAmDataParamOpts)
 		if err != nil {
 			if res == nil {
 				logger.SdmLog.Errorf(err.Error())
@@ -296,7 +295,7 @@ func getSupiProcedure(supi string, plmnID string, dataSetNames []string, support
 	if containDataSetName(dataSetNames, string(models.DataSetName_SMF_SEL)) {
 		var smfSelSubsbody models.SmfSelectionSubscriptionData
 		udm_context.UDM_Self().CreateSmfSelectionSubsDataforUe(supi, smfSelSubsbody)
-		smfSelData, res, err := clientAPI.SMFSelectionSubscriptionDataDocumentApi.QuerySmfSelectData(context.Background(),
+		smfSelData, res, err := clientAPI.SMFSelectionSubscriptionDataDocumentApi.QuerySmfSelectData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"),
 			supi, plmnID, &querySmfSelectDataParamOpts)
 		if err != nil {
 			if res == nil {
@@ -341,7 +340,7 @@ func getSupiProcedure(supi string, plmnID string, dataSetNames []string, support
 		querySmfRegListParamOpts.SupportedFeatures = optional.NewString(supportedFeatures)
 		udm_context.UDM_Self().CreateUeContextInSmfDataforUe(supi, UeContextInSmfbody)
 		pdusess, res, err := clientAPI.SMFRegistrationsCollectionApi.QuerySmfRegList(
-			context.Background(), supi, &querySmfRegListParamOpts)
+			openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, &querySmfRegListParamOpts)
 		if err != nil {
 			if res == nil {
 				logger.SdmLog.Errorf(err.Error())
@@ -405,7 +404,7 @@ func getSupiProcedure(supi string, plmnID string, dataSetNames []string, support
 
 	if containDataSetName(dataSetNames, string(models.DataSetName_SM)) {
 		sessionManagementSubscriptionData, res, err := clientAPI.SessionManagementSubscriptionDataApi.
-			QuerySmData(context.Background(), supi, plmnID, &querySmDataParamOpts)
+			QuerySmData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &querySmDataParamOpts)
 		if err != nil {
 			if res == nil {
 				logger.SdmLog.Errorf(err.Error())
@@ -448,7 +447,7 @@ func getSupiProcedure(supi string, plmnID string, dataSetNames []string, support
 		var TraceDatabody models.TraceData
 		udm_context.UDM_Self().CreateTraceDataforUe(supi, TraceDatabody)
 		traceData, res, err := clientAPI.TraceDataDocumentApi.QueryTraceData(
-			context.Background(), supi, plmnID, &queryTraceDataParamOpts)
+			openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &queryTraceDataParamOpts)
 		if err != nil {
 			if res == nil {
 				logger.SdmLog.Errorf(err.Error())
@@ -530,7 +529,7 @@ func getSharedDataProcedure(sharedDataIds []string, supportedFeatures string) (
 	var getSharedDataParamOpts Nudr.GetSharedDataParamOpts
 	getSharedDataParamOpts.SupportedFeatures = optional.NewString(supportedFeatures)
 
-	sharedDataResp, res, err := clientAPI.RetrievalOfSharedDataApi.GetSharedData(context.Background(), sharedDataIds,
+	sharedDataResp, res, err := clientAPI.RetrievalOfSharedDataApi.GetSharedData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), sharedDataIds,
 		&getSharedDataParamOpts)
 	if err != nil {
 		if res == nil {
@@ -615,7 +614,7 @@ func getSmDataProcedure(supi string, plmnID string, Dnn string, Snssai string, s
 	querySmDataParamOpts.SingleNssai = optional.NewInterface(Snssai)
 
 	sessionManagementSubscriptionDataResp, res, err := clientAPI.SessionManagementSubscriptionDataApi.
-		QuerySmData(context.Background(), supi, plmnID, &querySmDataParamOpts)
+		QuerySmData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &querySmDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -725,7 +724,7 @@ func getNssaiProcedure(supi string, plmnID string, supportedFeatures string) (
 	}
 
 	accessAndMobilitySubscriptionDataResp, res, err := clientAPI.AccessAndMobilitySubscriptionDataDocumentApi.
-		QueryAmData(context.Background(), supi, plmnID, &queryAmDataParamOpts)
+		QueryAmData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &queryAmDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -813,7 +812,7 @@ func getSmfSelectDataProcedure(supi string, plmnID string, supportedFeatures str
 	udm_context.UDM_Self().CreateSmfSelectionSubsDataforUe(supi, body)
 
 	smfSelectionSubscriptionDataResp, res, err := clientAPI.SMFSelectionSubscriptionDataDocumentApi.
-		QuerySmfSelectData(context.Background(), supi, plmnID, &querySmfSelectDataParamOpts)
+		QuerySmfSelectData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &querySmfSelectDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -882,7 +881,7 @@ func subscribeToSharedDataProcedure(sdmSubscription *models.SdmSubscription) (
 	udmClientAPI := Nudm_SubscriberDataManagement.NewAPIClient(cfg)
 
 	sdmSubscriptionResp, res, err := udmClientAPI.SubscriptionCreationForSharedDataApi.SubscribeToSharedData(
-		context.Background(), *sdmSubscription)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), *sdmSubscription)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -959,7 +958,7 @@ func subscribeProcedure(sdmSubscription *models.SdmSubscription, supi string) (
 	}
 
 	sdmSubscriptionResp, res, err := clientAPI.SDMSubscriptionsCollectionApi.CreateSdmSubscriptions(
-		context.Background(), supi, *sdmSubscription)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, *sdmSubscription)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1028,7 +1027,7 @@ func unsubscribeForSharedDataProcedure(subscriptionID string) *models.ProblemDet
 	udmClientAPI := Nudm_SubscriberDataManagement.NewAPIClient(cfg)
 
 	res, err := udmClientAPI.SubscriptionDeletionForSharedDataApi.UnsubscribeForSharedData(
-		context.Background(), subscriptionID)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), subscriptionID)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1087,7 +1086,7 @@ func unsubscribeProcedure(supi string, subscriptionID string) *models.ProblemDet
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
 
-	res, err := clientAPI.SDMSubscriptionDocumentApi.RemovesdmSubscriptions(context.Background(), supi, subscriptionID)
+	res, err := clientAPI.SDMSubscriptionDocumentApi.RemovesdmSubscriptions(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, subscriptionID)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1161,7 +1160,7 @@ func modifyProcedure(sdmSubsModification *models.SdmSubsModification, supi strin
 		SdmSubscription: optional.NewInterface(sdmSubscription),
 	}
 	res, err := clientAPI.SDMSubscriptionDocumentApi.Updatesdmsubscriptions(
-		context.Background(), supi, subscriptionID, &body)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, subscriptionID, &body)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1237,7 +1236,7 @@ func modifyForSharedDataProcedure(sdmSubsModification *models.SdmSubsModificatio
 	}
 
 	res, err := clientAPI.SDMSubscriptionDocumentApi.Updatesdmsubscriptions(
-		context.Background(), supi, subscriptionID, &body)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, subscriptionID, &body)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1309,7 +1308,7 @@ func getTraceDataProcedure(supi string, plmnID string) (
 	udm_context.UDM_Self().CreateTraceDataforUe(supi, body)
 
 	traceDataRes, res, err := clientAPI.TraceDataDocumentApi.QueryTraceData(
-		context.Background(), supi, plmnID, &queryTraceDataParamOpts)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, plmnID, &queryTraceDataParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Warnln(err)
@@ -1393,7 +1392,7 @@ func getUeContextInSmfDataProcedure(supi string, supportedFeatures string) (
 	udm_context.UDM_Self().CreateUeContextInSmfDataforUe(supi, body)
 
 	pdusess, res, err := clientAPI.SMFRegistrationsCollectionApi.QuerySmfRegList(
-		context.Background(), supi, &querySmfRegListParamOpts)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, &querySmfRegListParamOpts)
 	if err != nil {
 		if res == nil {
 			logger.SdmLog.Infoln(err)

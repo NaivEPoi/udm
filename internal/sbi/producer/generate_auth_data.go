@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	cryptoRand "crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -129,7 +128,7 @@ func ConfirmAuthDataProcedure(authEvent models.AuthEvent, supi string) (problemD
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
 	resp, err := client.AuthenticationStatusDocumentApi.CreateAuthenticationStatus(
-		context.Background(), supi, &createAuthParam)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, &createAuthParam)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(resp.StatusCode),
@@ -174,7 +173,7 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 	if err != nil {
 		return nil, util.ProblemDetailsSystemFailure(err.Error())
 	}
-	authSubs, res, err := client.AuthenticationDataDocumentApi.QueryAuthSubsData(context.Background(), supi, nil)
+	authSubs, res, err := client.AuthenticationDataDocumentApi.QueryAuthSubsData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, nil)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: http.StatusForbidden,
@@ -450,7 +449,7 @@ func GenerateAuthDataProcedure(authInfoRequest models.AuthenticationInfoRequest,
 
 	var rsp *http.Response
 	rsp, err = client.AuthenticationDataDocumentApi.ModifyAuthentication(
-		context.Background(), supi, patchItemArray)
+		openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), supi, patchItemArray)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: http.StatusForbidden,

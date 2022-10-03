@@ -47,5 +47,7 @@ func InitUDMContext(udmContext *context.UDMContext) {
 
 	udmContext.SuciProfiles = configuration.SuciProfiles
 
+	udmContext.OAuth = configuration.OAuth
+
 	udmContext.InitNFService(servingNameList, config.Info.Version)
 }

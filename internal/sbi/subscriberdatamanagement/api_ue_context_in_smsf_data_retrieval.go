@@ -12,10 +12,18 @@ package subscriberdatamanagement
 import (
 	"net/http"
 
+	"github.com/free5gc/openapi"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/gin-gonic/gin"
 )
 
 // GetUeContextInSmsfData - retrieve a UE's UE Context In SMSF Data
 func HTTPGetUeContextInSmsfData(c *gin.Context) {
+	scopes := []string{"nudm-sdm"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && udm_context.UDM_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{})
 }

@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/free5gc/udm/internal/logger"
 	"github.com/free5gc/udm/internal/sbi/producer"
 	"github.com/free5gc/util/httpwrapper"
@@ -23,6 +24,12 @@ import (
 
 // GetSmData - retrieve a UE's Session Management Subscription Data
 func HTTPGetSmData(c *gin.Context) {
+	scopes := []string{"nudm-sdm"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && udm_context.UDM_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	req := httpwrapper.NewRequest(c.Request, nil)
 	req.Params["supi"] = c.Param("supi")
 	req.Query.Set("plmn-id", c.Query("plmn-id"))

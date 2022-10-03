@@ -66,7 +66,7 @@ func TestUpdate(t *testing.T) {
 	var ppData models.PpData
 	ppData.SupportedFeatures = "Test001"
 	gpsi := "SDM1234"
-	resp, err := clientAPI.SubscriptionDataUpdateApi.Update(context.Background(), gpsi, ppData)
+	resp, err := clientAPI.SubscriptionDataUpdateApi.Update(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), gpsi, ppData)
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {

@@ -1,11 +1,11 @@
 package producer
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/free5gc/udm/internal/logger"
 	"github.com/free5gc/udm/internal/util"
 	"github.com/free5gc/util/httpwrapper"
@@ -35,7 +35,7 @@ func UpdateProcedure(updateRequest models.PpData, gpsi string) (problemDetails *
 	if err != nil {
 		return util.ProblemDetailsSystemFailure(err.Error())
 	}
-	res, err := clientAPI.ProvisionedParameterDataDocumentApi.ModifyPpData(context.Background(), gpsi, nil)
+	res, err := clientAPI.ProvisionedParameterDataDocumentApi.ModifyPpData(openapi.CreateContext(udm_context.UDM_Self().OAuth, udm_context.UDM_Self().NfId, udm_context.UDM_Self().NrfUri, "UDM"), gpsi, nil)
 	if err != nil {
 		problemDetails = &models.ProblemDetails{
 			Status: int32(res.StatusCode),

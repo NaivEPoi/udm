@@ -16,6 +16,7 @@ import (
 
 	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/free5gc/udm/internal/logger"
 	"github.com/free5gc/udm/internal/sbi/producer"
 	"github.com/free5gc/util/httpwrapper"
@@ -23,6 +24,12 @@ import (
 
 // GenerateAuthData - Generate authentication data for the UE
 func HttpGenerateAuthData(c *gin.Context) {
+	scopes := []string{"nudm-ueau"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && udm_context.UDM_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	var authInfoReq models.AuthenticationInfoRequest
 
 	// step 1: retrieve http request body

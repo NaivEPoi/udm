@@ -45,6 +45,7 @@ type UDMContext struct {
 	SubscriptionOfSharedDataChange sync.Map                     // subscriptionID as key
 	SuciProfiles                   []suci.SuciProfile
 	EeSubscriptionIDGenerator      *idgenerator.IDGenerator
+	OAuth                          bool `yaml:"OAuth,omitempty"`
 }
 
 type UdmUeContext struct {

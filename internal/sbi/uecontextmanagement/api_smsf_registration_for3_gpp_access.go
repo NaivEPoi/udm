@@ -12,10 +12,18 @@ package uecontextmanagement
 import (
 	"net/http"
 
+	"github.com/free5gc/openapi"
+	udm_context "github.com/free5gc/udm/internal/context"
 	"github.com/gin-gonic/gin"
 )
 
 // UpdateSMSFReg3GPP - register as SMSF for 3GPP access
 func HTTPUpdateSMSFReg3GPP(c *gin.Context) {
+	scopes := []string{"nudm-uecm"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && udm_context.UDM_Self().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{})
 }
